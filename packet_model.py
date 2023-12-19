@@ -31,13 +31,13 @@ class Packet:
 
     def _create_body_data(self, packet_type, bodyPacket):
         # print(**bodyPacket)
-        if packet_type == 0:
+        if packet_type == 0 or packet_type == 1:
             return ChatStreamPacket(**bodyPacket)
-        elif packet_type == 1:
-            return ImagePacket(**bodyPacket)
         elif packet_type == 2:
+            return ImagePacket(**bodyPacket)
+        elif packet_type == 3:
             return TTSPacket(**bodyPacket)
-        elif packet_type == 3 or packet_type == 4:
+        elif packet_type == 4 :
             return STTPacket(**bodyPacket)
         else:
             raise ValueError("Invalid packet_type")
