@@ -30,7 +30,6 @@ class Packet:
         self.apiKey = apiKey
 
     def _create_body_data(self, packet_type, bodyPacket):
-        # print(**bodyPacket)
         if packet_type == 0 or packet_type == 1:
             return ChatStreamPacket(**bodyPacket)
         elif packet_type == 2:

@@ -19,7 +19,7 @@ class VisionHandler(tornado.web.RequestHandler, ABC):
         try:
             # TODO 添加验证，如果有
             json_str = self.request.body.decode('utf-8')
-            packet = unJsonPacket(json_str,ParseType.Chat.value)
+            packet = unJsonPacket(json_str,ParseType.Vision.value)
             inner = packet.body
             openai_client = provideOpenai()
             openai_client = eraseDefault(packet, openai_client)

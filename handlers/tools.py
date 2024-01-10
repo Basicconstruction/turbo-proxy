@@ -14,10 +14,11 @@ def unJsonPacket(requestBody: str,type: int):
     return packet
 
 class ParseType(Enum):
-    Chat = 1
-    Image = 3
-    TTS = 4
-    STT = 5
+    Chat = 0
+    Vision = 1
+    Image = 2
+    TTS = 3
+    STT = 4
 
 
 def eraseDefault(packet: Packet, openai: OpenAI):
