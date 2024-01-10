@@ -3,7 +3,7 @@ from abc import ABC
 from openai import NoneType
 from typing import List
 import tornado.web
-from handlers.tools import unJsonPacket, eraseDefault
+from handlers.tools import unJsonPacket, eraseDefault, ParseType
 from openai_model import Image, encodeImage
 from openai_provider import provideOpenai
 
@@ -19,9 +19,8 @@ class ImageHandler(tornado.web.RequestHandler, ABC):
         self.set_header('Cache-Control', 'no-cache')
         self.set_header('Connection', 'keep-alive')
         try:
-            authorization_header = self.request.headers.get("Authorization")
             json_str = self.request.body.decode('utf-8')
-            packet = unJsonPacket(json_str)
+            packet = unJsonPacket(json_str,ParseType.Image.value)
             inner = packet.body
             openai_client = provideOpenai()
             openai_client = eraseDefault(packet, openai_client)

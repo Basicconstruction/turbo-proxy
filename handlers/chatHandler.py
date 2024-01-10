@@ -1,6 +1,6 @@
 from abc import ABC
 import tornado.web
-from handlers.tools import eraseDefault, unJsonPacket
+from handlers.tools import eraseDefault, unJsonPacket, ParseType
 from openai_provider import provideOpenai
 
 
@@ -15,17 +15,15 @@ class ChatStreamHandler(tornado.web.RequestHandler, ABC):
         self.set_header('Cache-Control', 'no-cache')
         self.set_header('Connection', 'keep-alive')
         try:
-            authorization_header = self.request.headers.get("Authorization")
-            # TODO 添加验证，如果有
             json_str = self.request.body.decode('utf-8')
-            packet = unJsonPacket(json_str)
+            packet = unJsonPacket(json_str,ParseType.Chat.value)
             inner = packet.body
             openai_client = provideOpenai()
             openai_client = eraseDefault(packet, openai_client)
             response = openai_client.chat.completions.create(
                 model=inner.model,
                 messages=inner.messages,
-                stream=True,  # 是否开启流式输出
+                stream=True,
                 max_tokens=inner.max_tokens,
                 frequency_penalty=inner.frequency_penalty,
                 presence_penalty=inner.presence_penalty,

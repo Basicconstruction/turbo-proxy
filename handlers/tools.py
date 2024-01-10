@@ -1,18 +1,23 @@
 import os
 import sys
 import tempfile
+from enum import Enum
 
 from openai import OpenAI, NoneType
 import ujson
 from packet_model import Packet
 
 
-def unJsonPacket(requestBody: str):
-    # print(requestBody)
+def unJsonPacket(requestBody: str,type: int):
     json_data = ujson.loads(requestBody)
-    # print("not error "+json_data)
-    packet = Packet(json_data["type"], json_data["body"], json_data["baseUrl"], json_data["apiKey"])
+    packet = Packet(type, json_data["body"], json_data["baseUrl"], json_data["apiKey"])
     return packet
+
+class ParseType(Enum):
+    Chat = 1
+    Image = 3
+    TTS = 4
+    STT = 5
 
 
 def eraseDefault(packet: Packet, openai: OpenAI):
@@ -28,4 +33,3 @@ def eraseDefault(packet: Packet, openai: OpenAI):
 def path():
     temp_directory = tempfile.gettempdir()
     return temp_directory
-    # return os.path.dirname(sys.executable)

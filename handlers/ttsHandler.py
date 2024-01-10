@@ -8,7 +8,7 @@ import tornado
 import ujson
 
 from handlers import tools
-from handlers.tools import eraseDefault, unJsonPacket, path
+from handlers.tools import eraseDefault, unJsonPacket, path, ParseType
 from openai_provider import provideOpenai
 
 
@@ -23,7 +23,6 @@ class TTSHandler(tornado.web.RequestHandler, ABC):
         self.set_header('Cache-Control', 'no-cache')
         self.set_header('Connection', 'keep-alive')
         try:
-            # authorization_header = self.request.headers.get("Authorization")
             absolutePath = tools.path() + "\\tmp"
             if not os.path.exists(absolutePath):
                 os.makedirs(absolutePath)
@@ -35,7 +34,7 @@ class TTSHandler(tornado.web.RequestHandler, ABC):
                     prompt += file_data['body'].decode("utf-8")
             #
             packetStr = self.get_body_argument('packet')
-            packet = unJsonPacket(packetStr)
+            packet = unJsonPacket(packetStr,ParseType.TTS.value)
             inner = packet.body
             path = F"{time.time()}{random.randint(1,1000)}"
             file_path = absolutePath+"\\"+path

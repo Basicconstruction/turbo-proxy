@@ -2,7 +2,7 @@ from abc import ABC
 
 import tornado
 
-from handlers.tools import unJsonPacket, eraseDefault
+from handlers.tools import unJsonPacket, eraseDefault, ParseType
 from openai_provider import provideOpenai
 
 
@@ -17,10 +17,9 @@ class VisionHandler(tornado.web.RequestHandler, ABC):
         self.set_header('Cache-Control', 'no-cache')
         self.set_header('Connection', 'keep-alive')
         try:
-            authorization_header = self.request.headers.get("Authorization")
             # TODO 添加验证，如果有
             json_str = self.request.body.decode('utf-8')
-            packet = unJsonPacket(json_str)
+            packet = unJsonPacket(json_str,ParseType.Chat.value)
             inner = packet.body
             openai_client = provideOpenai()
             openai_client = eraseDefault(packet, openai_client)

@@ -7,7 +7,7 @@ import tornado
 from openai._types import NotGiven
 
 from handlers import tools
-from handlers.tools import eraseDefault, unJsonPacket
+from handlers.tools import eraseDefault, unJsonPacket, ParseType
 from openai_provider import provideOpenai
 
 
@@ -22,10 +22,8 @@ class STTHandler(tornado.web.RequestHandler, ABC):
         self.set_header('Cache-Control', 'no-cache')
         self.set_header('Connection', 'keep-alive')
         try:
-            authorization_header = self.request.headers.get("Authorization")
             absolutePath = tools.path() + "\\tmp"
             if not os.path.exists(absolutePath):
-                # 如果文件夹不存在，则创建它
                 os.makedirs(absolutePath)
             files = self.request.files
             path = F"{time.time().__floor__()}{random.randint(1, 1000)}.mp3"
@@ -35,23 +33,15 @@ class STTHandler(tornado.web.RequestHandler, ABC):
                     self.write("没有传输音频文件")
                     return
                 file0 = files[file_field][0]
-                # print("file0 ",file0['body'])
                 with open(file_path, "wb") as fileTmp:
                     fileTmp.write(file0['body'])
-                    # print(file0['body'])
-                    # fileTmp.flush()
-                    # fileTmp.close()
-                    # print("done")
             print("path: " + file_path)
 
             packetStr = self.get_body_argument('packet')
-            # print(packetStr)
-            packet = unJsonPacket(packetStr)
-            # print(packet)
+            packet = unJsonPacket(packetStr,ParseType.STT.value)
             inner = packet.body
             openai_client = provideOpenai()
             openai_client = eraseDefault(packet, openai_client)
-            # time.sleep(0.2)
             openedMp3 = open(file_path, "rb")
             print(inner)
             if (inner.transcription):

@@ -16,6 +16,8 @@ build/*/
 *.pyd
 *.exe
 *.toc
+*.zip
+*.rar
 
 # Distribution / packaging
 .Python
